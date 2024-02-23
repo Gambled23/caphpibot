@@ -17,6 +17,8 @@ class User extends Model
     protected $fillable = [
         'username',
         'discord_id',
+        'riot_id',
+        'region',
         'is_admin',
     ];
 

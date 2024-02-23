@@ -5,7 +5,7 @@ namespace App\SlashCommands;
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 
-class Example extends SlashCommand
+class Say extends SlashCommand
 {
     /**
      * The slash command name.

@@ -21,7 +21,6 @@ class MessageLog extends Event
      */
     public function handle(Message $message, Discord $discord)
     {
-        dd($message->attributes);
-        $this->console()->log('El mensaje fue: ' . $message->content);
+        #$this->console()->log('El mensaje fue: ' . $message->content);
     }
 }

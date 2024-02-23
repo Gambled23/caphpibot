@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->string('discord_id')->primary();
             $table->string('username')->index();
-            $table->string('discord_id')->index();
+            $table->string('riot_id')->index();
+            $table->string('region')->default('lan');
             $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
