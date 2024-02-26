@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->integer('discord_id')->primary();
-            $table->string('username')->index();
-            $table->string('riot_id')->index();
-            $table->string('region')->default('lan');
-            $table->boolean('is_admin')->default(false);
+        Schema::create('torneos-users', function (Blueprint $table) {
+            $table->id();
+            $table->integer('discord_id')->unsigned();
+            $table->foreign('discord_id')->references('discord_id')->on('users');
+            $table->integer('torneo_id')->unsigned();
+            $table->foreign('torneo_id')->references('id')->on('torneos');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        //
     }
 };
