@@ -42,7 +42,7 @@ class RiotAccount extends SlashCommand
                 [
                     'name' => 'tagline',
                     'description' => 'Ejemplo: 0429',
-                    'type' => Option::INTEGER,
+                    'type' => Option::STRING,
                     'required' => true,
                 ],
                 [
@@ -141,7 +141,7 @@ class RiotAccount extends SlashCommand
                     $this
                       ->message()
                       ->title("Cuenta de {$user->username}")
-                      ->content("https://www.op.gg/summoners/{$user->region}/{$parts[0]}-{$parts[1]}")
+                      ->content("https://www.leagueofgraphs.com/es/summoner/{$user->region}/{$parts[0]}-{$parts[1]}")
                       ->build()
                 );
             }
