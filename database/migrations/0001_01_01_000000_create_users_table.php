@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->integer('discord_id')->primary();
+            $table->string('discord_id')->primary();
             $table->string('username')->index();
             $table->string('riot_id')->index();
             $table->string('region')->default('lan');

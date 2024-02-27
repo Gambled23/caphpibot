@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,11 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('torneos-users', function (Blueprint $table) {
+        Schema::create('torneos_users', function (Blueprint $table) {
             $table->id();
-            $table->integer('discord_id')->unsigned();
+            $table->string('discord_id');
             $table->foreign('discord_id')->references('discord_id')->on('users');
-            $table->integer('torneo_id')->unsigned();
+            $table->unsignedBigInteger('torneo_id');
             $table->foreign('torneo_id')->references('id')->on('torneos');
             $table->timestamps();
         });
