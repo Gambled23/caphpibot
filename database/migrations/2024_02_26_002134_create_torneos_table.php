@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('torneos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->timestamp('fecha');
+            $table->string('descripcion')->nullable();
+            $table->string('dia');
+            $table->string('mes');
+            $table->string('hora');
             $table->timestamps();
         });
     }
