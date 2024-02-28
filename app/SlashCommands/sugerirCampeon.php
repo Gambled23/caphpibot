@@ -6,21 +6,21 @@ use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 
-class Say extends SlashCommand
+class sugerirCampeon extends SlashCommand
 {
     /**
      * The slash command name.
      *
      * @var string
      */
-    protected $name = 'message';
+    protected $name = 'sugerir-campeon';
 
     /**
      * The slash command description.
      *
      * @var string
      */
-    protected $description = 'Envía un mensaje a través del bot';
+    protected $description = 'Comandos sobre sugerencias de campeones';
 
     /**
      * The command options.
@@ -51,27 +51,29 @@ class Say extends SlashCommand
      */
     public function handle($interaction)
     {
-        $data = $interaction->data;
-        $message = $data->options['message']->value;
-        
         $interaction->respondWithMessage(
             $this
               ->message()
-              ->title('Example')
-              ->content($message)
+              ->title('sugerirCampeones')
+              ->content('Hello world!')
               ->build()
         );
     }
 
     public function options()
-    {
-        return [
-            new Option($this->discord(), [
-                'name' => 'message',
-                'description' => 'Send a message through the bot.',
-                'type' => Option::STRING,
-                'required' => true,
-            ]),
-        ];
-    }
+{
+    $option = new Option($this->discord());
+    $option2 = new Option($this->discord());
+    
+    return [
+        $option
+          ->setName('sugerir')
+          ->setDescription('Sugerir un nuevo campeón')
+          ->setType(Option::SUB_COMMAND),
+        $option2
+          ->setName('listado')
+          ->setDescription('Ver los campeones sugeridos')
+          ->setType(Option::SUB_COMMAND),
+    ];
+}
 }

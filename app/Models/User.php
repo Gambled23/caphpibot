@@ -40,4 +40,9 @@ class User extends Model
     {
         return "<@{$this->discord_id}>";
     }
+
+    public function torneos()
+    {
+        return $this->belongsToMany(Torneo::class, 'torneos_users', 'discord_id', 'torneo_id');
+    }
 }
