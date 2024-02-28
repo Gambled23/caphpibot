@@ -1,9 +1,13 @@
 <?php
 
 namespace App\SlashCommands;
+
+use Laracord\Discord\Message;
+use Laracord\Commands\SlashCommand;
+use Discord\Parts\Interactions\Interaction;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
-use Laracord\Commands\SlashCommand;
+use App\Models\Torneo;
 
 class ping extends SlashCommand
 {
@@ -19,7 +23,7 @@ class ping extends SlashCommand
      *
      * @var string
      */
-    protected $description = 'The ping slush command.';
+    protected $description = 'The ping AYUDA command.';
 
     /**
      * The command options.
@@ -57,6 +61,10 @@ class ping extends SlashCommand
               ->message()
               ->title('ping')
               ->content('You chose: ' . $respuesta)
+              ->button('Hello', fn (Interaction $interaction) => $interaction->respondWithMessage(
+                $this->message('Well hello to you!')->build(),
+                ephemeral: true
+                ), emoji: '👋')
               ->build()
         );
     }

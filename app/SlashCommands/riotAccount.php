@@ -3,6 +3,7 @@
 namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
+use Discord\Parts\Interactions\Interaction;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
@@ -114,6 +115,7 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title("Cuenta de {$user->username}")
                       ->content("{$user->username} Aún no ha registrado su cuenta de League of Legends.\n\nPara registrarla, usa el comando /riot-account registrar")
+                      ->error()
                       ->build()
                 );
             }
