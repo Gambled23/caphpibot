@@ -4,6 +4,7 @@ namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
 
 class RiotAccount extends SlashCommand
@@ -27,46 +28,7 @@ class RiotAccount extends SlashCommand
      *
      * @var array
      */
-    protected $options = [
-        [
-            'name' => 'registrar',
-            'description' => 'Registra tu cuenta de League of Legends',
-            'type' => Option::SUB_COMMAND,
-            'options' => [
-                [
-                    'name' => 'username',
-                    'description' => 'Ejemplo: elcapibe',
-                    'type' => Option::STRING,
-                    'required' => true,
-                ],
-                [
-                    'name' => 'tagline',
-                    'description' => 'Ejemplo: 0429',
-                    'type' => Option::STRING,
-                    'required' => true,
-                ],
-                [
-                    'name' => 'region',
-                    'description' => 'Establecer si es diferente a LAN',
-                    'type' => Option::STRING,
-                    'required' => false,
-                ],
-            ],
-        ],
-        [
-            'name' => 'info',
-            'description' => 'Información sobre una cuenta de League of Legends',
-            'type' => Option::SUB_COMMAND,
-            'options' => [
-                [
-                    'name' => 'usuario',
-                    'description' => 'Usuario del que quieres ver la cuenta',
-                    'type' => Option::USER,
-                    'required' => true,
-                ],
-            ],
-        ],
-    ];
+    protected $options = [];
 
     /**
      * Indiciates whether the slash command requires admin permissions.
@@ -155,8 +117,50 @@ class RiotAccount extends SlashCommand
                       ->build()
                 );
             }
-
         }
+    }
 
+    public function options(){
+        return [
+            new Option($this->discord(), [
+                'name' => 'registrar',
+                'description' => 'Registra tu cuenta de League of Legends',
+                'type' => Option::SUB_COMMAND,
+                'options' => [
+                    new Option($this->discord(), [
+                        'name' => 'username',
+                        'description' => 'Ejemplo: elcapibe',
+                        'type' => Option::STRING,
+                        'required' => true,
+                    ]),
+                    new Option($this->discord(), [
+                        'name' => 'tagline',
+                        'description' => 'Ejemplo: 0429',
+                        'type' => Option::STRING,
+                        'required' => true,
+                    ]),
+                    new Option($this->discord(), [
+                        'name' => 'region',
+                        'description' => 'Establecer si es diferente a LAN',
+                        'type' => Option::STRING,
+                        'required' => false,
+                    ]),
+                ],
+            ]),
+            
+            new Option($this->discord(), [
+                'name' => 'info',
+                'description' => 'Información sobre una cuenta de League of Legends',
+                'type' => Option::SUB_COMMAND,
+                'options' => [
+                    new Option($this->discord(), [
+                        'name' => 'usuario',
+                        'description' => 'Usuario del que quieres ver la cuenta',
+                        'type' => Option::USER,
+                        'required' => true,
+                    ]),
+                ],
+            ]),
+        ];
     }
 }
