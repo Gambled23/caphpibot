@@ -83,7 +83,9 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title('Cuenta de Riot ya registrada')
                       ->content("Parece que ya has registrado tu cuetna de lol, si deseas cambiarla, contacta a un administrador.")
-                      ->build()
+                      ->error()
+                      ->build(),
+                      ephemeral: true
                 );
             }
             $interaction->respondWithMessage(
@@ -91,7 +93,8 @@ class RiotAccount extends SlashCommand
                   ->message()
                   ->title('Registro de Riot account')
                   ->content("Tu cuenta {$user->riot_id} ha sido registrada con éxito.")
-                  ->build()
+                  ->build(),
+                  ephemeral: true
             );
         }
         else if ($info) {

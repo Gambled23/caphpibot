@@ -55,21 +55,46 @@ class inscribirtorneo extends SlashCommand
      */
     public function handle($interaction)
     {
-        $interaction->respondWithMessage(
-            $this
-              ->message()
-              ->title('Inscrito al torneo!')
-              ->content('Te has inscrito al torneo correctamente.')
-              ->build(),
-              ephemeral: true
-        );
+        $existingRecord = DB::table('torneos_users')
+            ->where('discord_id', $interaction->user->id)
+            ->where('torneo_id', $interaction->data->options['torneo']->value)
+            ->first();
+
+        if ($existingRecord) {
+            $interaction->respondWithMessage(
+                $this
+                ->message()
+                ->title('Ya inscrito!! ')
+                ->content('Ya te habías inscrito a este torneo previamente.')
+                ->error()
+                ->build(),
+                ephemeral: true
+            );
+        }
+        else {
+            DB::table('torneos_users')->insert([
+                'discord_id' => $interaction->user->id,
+                'torneo_id' => $interaction->data->options['torneo']->value,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $interaction->respondWithMessage(
+                $this
+                ->message()
+                ->title('Inscrito al torneo!')
+                ->content('Te has inscrito al torneo correctamente.')
+                ->build(),
+                ephemeral: true
+            );
+        }
     }
 
     public function options()
     {
         $option = new Option($this->discord());
         $option
-            ->setName('Torneo')
+            ->setName('torneo')
             ->setDescription('El torneo al que te inscribirás.')
             ->setType(Option::STRING)
             ->setRequired(true);
