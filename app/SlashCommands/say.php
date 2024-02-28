@@ -4,6 +4,7 @@ namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Command\Choice;
 
 class Say extends SlashCommand
 {
@@ -26,14 +27,7 @@ class Say extends SlashCommand
      *
      * @var array
      */
-    protected $options = [
-        [
-            'name' => 'message',
-            'description' => 'Send a message through the bot.',
-            'type' => Option::STRING,
-            'required' => true,
-        ],
-    ];
+    protected $options = [];
 
     /**
      * Indiciates whether the slash command requires admin permissions.
@@ -67,5 +61,17 @@ class Say extends SlashCommand
               ->content($message)
               ->build()
         );
+    }
+
+    public function options()
+    {
+        return [
+            new Option($this->discord(), [
+                'name' => 'message',
+                'description' => 'Send a message through the bot.',
+                'type' => Option::STRING,
+                'required' => true,
+            ]),
+        ];
     }
 }
