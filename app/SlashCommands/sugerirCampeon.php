@@ -61,19 +61,43 @@ class sugerirCampeon extends SlashCommand
     }
 
     public function options()
-{
-    $option = new Option($this->discord());
-    $option2 = new Option($this->discord());
-    
-    return [
-        $option
-          ->setName('sugerir')
-          ->setDescription('Sugerir un nuevo campeón')
-          ->setType(Option::SUB_COMMAND),
-        $option2
-          ->setName('listado')
-          ->setDescription('Ver los campeones sugeridos')
-          ->setType(Option::SUB_COMMAND),
+    {
+        $option_sugerir = new Option($this->discord());
+        $option_sugerir_campeon = new Option($this->discord());
+        $option_sugerir_rol = new Option($this->discord());
+        $option_sugerir_build = new Option($this->discord());
+        $option_listado = new Option($this->discord());
+
+        return [
+          $option_sugerir
+            ->setName('sugerir')
+            ->setDescription('Sugerir un nuevo campeón')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption(
+                $option_sugerir_campeon
+                  ->setName('campeon')
+                  ->setDescription('Nombre del campeón')
+                  ->setType(Option::STRING)
+                  ->setRequired(true)
+            )
+            ->addOption(
+              $option_sugerir_build
+              ->setName('build')
+              ->setDescription('Cómo se debería armar el campeon')
+              ->setType(Option::STRING)
+              ->setRequired(true))
+            ->addOption(
+                $option_sugerir_rol
+                  ->setName('rol')
+                  ->setDescription('Rol del campeón')
+                  ->setType(Option::STRING)
+                  ->setRequired(true)
+            ),
+            
+          $option_listado
+            ->setName('listado')
+            ->setDescription('Ver los campeones sugeridos')
+            ->setType(Option::SUB_COMMAND),
     ];
 }
 }
