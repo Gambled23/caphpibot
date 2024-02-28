@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('descripcion')->nullable();
-            $table->string('dia');
-            $table->string('mes');
-            $table->string('hora');
+            $table->dateTime('fecha');
             $table->timestamps();
         });
     }

@@ -3,6 +3,7 @@
 namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
+use Discord\Parts\Interactions\Interaction;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
@@ -82,7 +83,9 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title('Cuenta de Riot ya registrada')
                       ->content("Parece que ya has registrado tu cuetna de lol, si deseas cambiarla, contacta a un administrador.")
-                      ->build()
+                      ->error()
+                      ->build(),
+                      ephemeral: true
                 );
             }
             $interaction->respondWithMessage(
@@ -90,7 +93,8 @@ class RiotAccount extends SlashCommand
                   ->message()
                   ->title('Registro de Riot account')
                   ->content("Tu cuenta {$user->riot_id} ha sido registrada con éxito.")
-                  ->build()
+                  ->build(),
+                  ephemeral: true
             );
         }
         else if ($info) {
@@ -114,6 +118,7 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title("Cuenta de {$user->username}")
                       ->content("{$user->username} Aún no ha registrado su cuenta de League of Legends.\n\nPara registrarla, usa el comando /riot-account registrar")
+                      ->error()
                       ->build()
                 );
             }

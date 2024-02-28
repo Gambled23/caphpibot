@@ -7,6 +7,8 @@ use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
 
+use Carbon\Carbon;
+
 class torneos extends SlashCommand
 {
     /**
@@ -53,24 +55,35 @@ class torneos extends SlashCommand
     public function handle($interaction)
     {
         $options = $interaction->data->options;
-        $this->console()->log($options['nombre']->value);
-        $this->console()->log($options['dia']->value);
-        $this->console()->log($options['mes']->value);
-        $this->console()->log($options['hora']->value);
+
+        $months = [
+            'enero' => 1,
+            'febrero' => 2,
+            'marzo' => 3,
+            'abril' => 4,
+            'mayo' => 5,
+            'junio' => 6,
+            'julio' => 7,
+            'agosto' => 8,
+            'septiembre' => 9,
+            'octubre' => 10,
+            'noviembre' => 11,
+            'diciembre' => 12,
+        ];
+        $monthNumber = $months[strtolower($options['mes']->value)] ?? null;        
+        $fecha = Carbon::createFromFormat('d m H:i', $options['dia']->value . ' ' . $monthNumber . ' ' . $options['hora']->value);
         
         $torneo = Torneo::create([
             'nombre' => $options['nombre']->value,
             'descripcion' => isset($options['descripcion']) ? $options['descripcion']->value : 'uwu',
-            'dia' => $options['dia']->value,
-            'mes' => $options['mes']->value,
-            'hora' => $options['hora']->value,
+            'fecha' => $fecha,
         ]);
 
         $interaction->respondWithMessage(
             $this
               ->message()
               ->title("{$torneo->nombre}")
-              ->content("{$torneo->descripcion} \nFecha: {$torneo->dia} de {$torneo->mes} a las {$torneo->hora}")
+              ->content("{$torneo->descripcion} \nFecha: {$torneo->fecha}")
               ->build());
     }
 
