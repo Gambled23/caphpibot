@@ -4,6 +4,7 @@ namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
 
 class torneos extends SlashCommand
@@ -27,38 +28,7 @@ class torneos extends SlashCommand
      *
      * @var array
      */
-    protected $options = [
-        [
-            'name' => 'nombre',
-            'description' => 'Nombre del torneo',
-            'type' => Option::STRING,
-            'required' => true,
-        ],
-        [
-            'name' => 'dia',
-            'description' => 'Día del torneo',
-            'type' => Option::STRING,
-            'required' => true,
-        ],
-        [
-            'name' => 'mes',
-            'description' => 'Mes del torneo',
-            'type' => Option::STRING,
-            'required' => true,
-        ],
-        [
-            'name' => 'hora',
-            'description' => 'Hora del centro de méxico (formato 24h)',
-            'type' => Option::STRING,
-            'required' => true,
-        ],
-        [
-            'name' => 'descripcion',
-            'description' => 'Descripción del torneo',
-            'type' => Option::STRING,
-            'required' => false,
-        ],
-    ];
+    protected $options = [];
 
     /**
      * Indiciates whether the slash command requires admin permissions.
@@ -102,5 +72,70 @@ class torneos extends SlashCommand
               ->title("{$torneo->nombre}")
               ->content("{$torneo->descripcion} \nFecha: {$torneo->dia} de {$torneo->mes} a las {$torneo->hora}")
               ->build());
+    }
+
+    public function options()
+    {
+        $option_nombre = new Option($this->discord());
+        $option_dia = new Option($this->discord());
+        $option_mes = new Option($this->discord());
+        $choice_mes_enero = (new Choice($this->discord()))->setName('Enero')->setValue('enero');
+        $choice_mes_febrero = (new Choice($this->discord()))->setName('Febrero')->setValue('febrero');
+        $choice_mes_marzo = (new Choice($this->discord()))->setName('Marzo')->setValue('marzo');
+        $choice_mes_abril = (new Choice($this->discord()))->setName('Abril')->setValue('abril');
+        $choice_mes_mayo = (new Choice($this->discord()))->setName('Mayo')->setValue('mayo');
+        $choice_mes_junio = (new Choice($this->discord()))->setName('Junio')->setValue('junio');
+        $choice_mes_julio = (new Choice($this->discord()))->setName('Julio')->setValue('julio');
+        $choice_mes_agosto = (new Choice($this->discord()))->setName('Agosto')->setValue('agosto');
+        $choice_mes_septiembre = (new Choice($this->discord()))->setName('Septiembre')->setValue('septiembre');
+        $choice_mes_octubre = (new Choice($this->discord()))->setName('Octubre')->setValue('octubre');
+        $choice_mes_noviembre = (new Choice($this->discord()))->setName('Noviembre')->setValue('noviembre');
+        $choice_mes_diciembre = (new Choice($this->discord()))->setName('Diciembre')->setValue('diciembre');
+        $option_hora = new Option($this->discord());
+        $option_descripcion = new Option($this->discord());
+
+        return [
+            $option_nombre
+                ->setName('nombre')
+                ->setDescription('Nombre del torneo')
+                ->setType(Option::STRING)
+                ->setRequired(true),
+
+            $option_dia
+                ->setName('dia')
+                ->setDescription('Día del torneo')
+                ->setType(Option::STRING)
+                ->setRequired(true),
+
+            $option_mes
+                ->setName('mes')
+                ->setDescription('Mes del torneo')
+                ->setType(Option::STRING)
+                ->setRequired(true)
+                ->addChoice($choice_mes_enero)
+                ->addChoice($choice_mes_febrero)
+                ->addChoice($choice_mes_marzo)
+                ->addChoice($choice_mes_abril)
+                ->addChoice($choice_mes_mayo)
+                ->addChoice($choice_mes_junio)
+                ->addChoice($choice_mes_julio)
+                ->addChoice($choice_mes_agosto)
+                ->addChoice($choice_mes_septiembre)
+                ->addChoice($choice_mes_octubre)
+                ->addChoice($choice_mes_noviembre)
+                ->addChoice($choice_mes_diciembre),
+                
+            $option_hora
+                ->setName('hora')
+                ->setDescription('Hora del centro de méxico (formato 24h)')
+                ->setType(Option::STRING)
+                ->setRequired(true),
+
+            $option_descripcion
+                ->setName('descripcion')
+                ->setDescription('Descripción del torneo')
+                ->setType(Option::STRING)
+                ->setRequired(false),
+        ];
     }
 }
