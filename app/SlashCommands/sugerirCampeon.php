@@ -4,6 +4,7 @@ namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Command\Choice;
 
 class sugerirCampeon extends SlashCommand
 {
