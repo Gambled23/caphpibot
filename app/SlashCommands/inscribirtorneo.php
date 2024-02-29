@@ -99,7 +99,7 @@ class inscribirtorneo extends SlashCommand
             ->setType(Option::STRING)
             ->setRequired(true);
 
-        $now = Carbon::now();
+        $now = Carbon::now('America/Chicago');
         $upcomingTorneos = DB::table('torneos')
             ->where('fecha', '>', $now)
             ->get();
