@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreign('discord_id')->references('discord_id')->on('users');
             $table->unsignedBigInteger('torneo_id');
             $table->foreign('torneo_id')->references('id')->on('torneos');
+            $table->boolean('confirmado')->default(false);
             $table->timestamps();
         });
     }

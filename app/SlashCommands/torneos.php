@@ -44,7 +44,7 @@ class torneos extends SlashCommand
      *
      * @var bool
      */
-    protected $hidden = false;
+    protected $hidden = true;
 
     /**
      * Handle the slash command.
@@ -92,20 +92,14 @@ class torneos extends SlashCommand
         $option_nombre = new Option($this->discord());
         $option_dia = new Option($this->discord());
         $option_mes = new Option($this->discord());
-        $choice_mes_enero = (new Choice($this->discord()))->setName('Enero')->setValue('enero');
-        $choice_mes_febrero = (new Choice($this->discord()))->setName('Febrero')->setValue('febrero');
-        $choice_mes_marzo = (new Choice($this->discord()))->setName('Marzo')->setValue('marzo');
-        $choice_mes_abril = (new Choice($this->discord()))->setName('Abril')->setValue('abril');
-        $choice_mes_mayo = (new Choice($this->discord()))->setName('Mayo')->setValue('mayo');
-        $choice_mes_junio = (new Choice($this->discord()))->setName('Junio')->setValue('junio');
-        $choice_mes_julio = (new Choice($this->discord()))->setName('Julio')->setValue('julio');
-        $choice_mes_agosto = (new Choice($this->discord()))->setName('Agosto')->setValue('agosto');
-        $choice_mes_septiembre = (new Choice($this->discord()))->setName('Septiembre')->setValue('septiembre');
-        $choice_mes_octubre = (new Choice($this->discord()))->setName('Octubre')->setValue('octubre');
-        $choice_mes_noviembre = (new Choice($this->discord()))->setName('Noviembre')->setValue('noviembre');
-        $choice_mes_diciembre = (new Choice($this->discord()))->setName('Diciembre')->setValue('diciembre');
         $option_hora = new Option($this->discord());
         $option_descripcion = new Option($this->discord());
+
+        $months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+        foreach ($months as $month) {
+            $choice = (new Choice($this->discord()))->setName($month)->setValue(strtolower($month));
+            $option_mes->addChoice($choice);
+        }
 
         return [
             $option_nombre
@@ -124,20 +118,8 @@ class torneos extends SlashCommand
                 ->setName('mes')
                 ->setDescription('Mes del torneo')
                 ->setType(Option::STRING)
-                ->setRequired(true)
-                ->addChoice($choice_mes_enero)
-                ->addChoice($choice_mes_febrero)
-                ->addChoice($choice_mes_marzo)
-                ->addChoice($choice_mes_abril)
-                ->addChoice($choice_mes_mayo)
-                ->addChoice($choice_mes_junio)
-                ->addChoice($choice_mes_julio)
-                ->addChoice($choice_mes_agosto)
-                ->addChoice($choice_mes_septiembre)
-                ->addChoice($choice_mes_octubre)
-                ->addChoice($choice_mes_noviembre)
-                ->addChoice($choice_mes_diciembre),
-                
+                ->setRequired(true),
+
             $option_hora
                 ->setName('hora')
                 ->setDescription('Hora del centro de méxico (formato 24h)')
