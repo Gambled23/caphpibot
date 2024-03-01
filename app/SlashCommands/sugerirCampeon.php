@@ -2,9 +2,11 @@
 
 namespace App\SlashCommands;
 
+use Illuminate\Support\Facades\DB;
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
+use App\Models\Sugerencia;
 
 class sugerirCampeon extends SlashCommand
 {
@@ -51,13 +53,53 @@ class sugerirCampeon extends SlashCommand
      */
     public function handle($interaction)
     {
-        $interaction->respondWithMessage(
-            $this
-              ->message()
-              ->title('sugerirCampeones')
-              ->content('Hello world!')
-              ->build()
+      $data = $interaction->data;
+      $sugerir = $data->options['sugerir'];
+      $listado = $data->options['listado'];
+
+      if ($sugerir) {
+        $sugerencia = Sugerencia::Create(
+          [
+            'campeon' => $sugerir->options['campeon']->value,
+            'build' => $sugerir->options['build']->value,
+            'rol' => $sugerir->options['rol']->value,
+            'discord_id' => $interaction->user->id,
+          ]
         );
+        $interaction->respondWithMessage(
+          $this
+            ->message()
+            ->title('Sugerencia enviada!')
+            ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado.")
+            ->build()
+      );
+
+      }
+      if ($listado) {
+        $usuarios = "";
+        $builds = "";
+        $votos = "";
+
+        $sugerencias = DB::table('sugerencias')
+          ->orderBy('votos', 'desc')
+          ->get();
+
+        foreach ($sugerencias as $sugerencia) {
+            $usuarios .= "<@{$sugerencia->discord_id}>\n";
+            $builds .= "{$sugerencia->campeon} en {$sugerencia->rol}; {$sugerencia->build}\n";
+            $votos .= "{$sugerencia->votos}\n";
+        }
+
+        $interaction->respondWithMessage(
+            $this->message('Participantes del torneo')
+            ->field('Usuario que hizo la sugerencia', $usuarios)
+            ->field('Build', $builds)
+            ->field('Votos', $votos)
+            ->build(),
+            ephemeral: true
+        );
+      }
+
     }
 
     public function options()
