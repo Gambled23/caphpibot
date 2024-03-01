@@ -101,7 +101,7 @@ class inscribirtorneo extends SlashCommand
                 $this
                 ->message()
                 ->title('Usuario no registrado :(')
-                ->content("Para registrarte a un torneo primero debes de registrar tu cuenta de Riot en el servidor.\nUtiliza el comando\n/riot-account register <nombre de invocador>\npara registrarte.")
+                ->content("Para registrarte a un torneo primero debes de registrar tu cuenta de Riot en el servidor.\nUtiliza el comando\n/capibaccount registrar <datos>\npara registrarte.")
                 ->error()
                 ->build(),
                 ephemeral: true
