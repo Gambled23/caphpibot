@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('descripcion')->nullable();
             $table->dateTime('fecha');
+            $table->unsignedBigInteger('participantes')->default(0);
             $table->timestamps();
         });
     }

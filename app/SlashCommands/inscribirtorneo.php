@@ -55,35 +55,54 @@ class inscribirtorneo extends SlashCommand
      */
     public function handle($interaction)
     {
-        $existingRecord = DB::table('torneos_users')
-            ->where('discord_id', $interaction->user->id)
-            ->where('torneo_id', $interaction->data->options['torneo']->value)
-            ->first();
+        $usuario = DB::table('users')
+        ->where('discord_id', $interaction->user->id)
+        ->first();
 
-        if ($existingRecord) {
-            $interaction->respondWithMessage(
-                $this
-                ->message()
-                ->title('Ya inscrito!! ')
-                ->content('Ya te habías inscrito a este torneo previamente.')
-                ->error()
-                ->build(),
-                ephemeral: true
-            );
+        if ($usuario) {
+            $inscrito = DB::table('torneos_users')
+                ->where('discord_id', $interaction->user->id)
+                ->where('torneo_id', $interaction->data->options['torneo']->value)
+                ->first();
+            if ($inscrito) {
+                $interaction->respondWithMessage(
+                    $this
+                    ->message()
+                    ->title('Ya inscrito!! ')
+                    ->content('Ya te habías inscrito a este torneo previamente.')
+                    ->error()
+                    ->build(),
+                    ephemeral: true
+                );
+            }
+            else {
+                DB::table('torneos_users')->insert([
+                    'discord_id' => $interaction->user->id,
+                    'torneo_id' => $interaction->data->options['torneo']->value,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+                DB::table('torneos')
+                    ->where('id', $interaction->data->options['torneo']->value)
+                    ->increment('participantes');
+
+                $interaction->respondWithMessage(
+                    $this
+                    ->message()
+                    ->title('Inscrito al torneo!')
+                    ->content('Te has inscrito al torneo correctamente.')
+                    ->build(),
+                    ephemeral: true
+                );
+        }
         }
         else {
-            DB::table('torneos_users')->insert([
-                'discord_id' => $interaction->user->id,
-                'torneo_id' => $interaction->data->options['torneo']->value,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-
             $interaction->respondWithMessage(
                 $this
                 ->message()
-                ->title('Inscrito al torneo!')
-                ->content('Te has inscrito al torneo correctamente.')
+                ->title('Usuario no registrado :(')
+                ->content("Para registrarte a un torneo primero debes de registrar tu cuenta de Riot en el servidor.\nUtiliza el comando\n/riot-account register <nombre de invocador>\npara registrarte.")
+                ->error()
                 ->build(),
                 ephemeral: true
             );
