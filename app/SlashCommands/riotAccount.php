@@ -3,6 +3,7 @@
 namespace App\SlashCommands;
 
 use Laracord\Commands\SlashCommand;
+use Discord\Parts\Interactions\Interaction;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
@@ -14,14 +15,14 @@ class RiotAccount extends SlashCommand
      *
      * @var string
      */
-    protected $name = 'riot-account';
+    protected $name = 'capibaccount';
 
     /**
      * The slash command description.
      *
      * @var string
      */
-    protected $description = 'Vincula tu cuenta de League of Legends con tu cuenta de Discord.';
+    protected $description = 'Comandos para gestionar tu capibaccount del servidor.';
 
     /**
      * The command options.
@@ -82,7 +83,9 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title('Cuenta de Riot ya registrada')
                       ->content("Parece que ya has registrado tu cuetna de lol, si deseas cambiarla, contacta a un administrador.")
-                      ->build()
+                      ->error()
+                      ->build(),
+                      ephemeral: true
                 );
             }
             $interaction->respondWithMessage(
@@ -90,7 +93,8 @@ class RiotAccount extends SlashCommand
                   ->message()
                   ->title('Registro de Riot account')
                   ->content("Tu cuenta {$user->riot_id} ha sido registrada con éxito.")
-                  ->build()
+                  ->build(),
+                  ephemeral: true
             );
         }
         else if ($info) {
@@ -113,7 +117,8 @@ class RiotAccount extends SlashCommand
                     $this
                       ->message()
                       ->title("Cuenta de {$user->username}")
-                      ->content("{$user->username} Aún no ha registrado su cuenta de League of Legends.\n\nPara registrarla, usa el comando /riot-account registrar")
+                      ->content("{$user->username} aún no ha registrado su cuenta de Riot en el servidor.\n{$user->username} debe utilizar el comando\n/capibaccount registrar <datos>\npara registrarla. ¡Avisale!")
+                      ->error()
                       ->build()
                 );
             }

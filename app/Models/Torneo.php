@@ -11,7 +11,7 @@ class Torneo extends Model
 
     protected $table = 'torneos';
 
-    protected $fillable = ['nombre', 'descripcion', 'dia', 'mes', 'hora' ];
+    protected $fillable = ['nombre', 'descripcion', 'fecha', 'participantes'];
 
     public function users()
     {
