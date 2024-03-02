@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('discord_id');
             $table->foreign('discord_id')->references('discord_id')->on('users');
             $table->unsignedBigInteger('votos')->default(0);
+            $table->boolean('jugado')->default(false);
             $table->timestamps();
         });
     }
