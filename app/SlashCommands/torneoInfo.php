@@ -54,7 +54,6 @@ class torneoInfo extends SlashCommand
             ->where('torneo_id', $torneo_id)
             ->get();
 
-        $fields = [];
         $usuarios = "";
         $confirmaciones = "";
         foreach ($torneo_users as $index => $user) {

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('riot_id')->index();
             $table->string('region')->default('lan');
             $table->boolean('is_admin')->default(false);
+            $table->dateTime('ultimo_voto')->nullable();
             $table->timestamps();
         });
     }

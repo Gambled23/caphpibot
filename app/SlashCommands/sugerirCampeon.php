@@ -2,9 +2,12 @@
 
 namespace App\SlashCommands;
 
+use Illuminate\Support\Facades\DB;
 use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
+use App\Models\Sugerencia;
+use Carbon\Carbon;
 
 class sugerirCampeon extends SlashCommand
 {
@@ -51,29 +54,151 @@ class sugerirCampeon extends SlashCommand
      */
     public function handle($interaction)
     {
-        $interaction->respondWithMessage(
-            $this
-              ->message()
-              ->title('sugerirCampeones')
-              ->content('Hello world!')
-              ->build()
+      $data = $interaction->data;
+      $sugerir = $data->options['sugerir'];
+      $listado = $data->options['listado'];
+      $votar = $data->options['votar'];
+
+      if ($sugerir) {
+        $sugerencia = Sugerencia::Create(
+          [
+            'campeon' => $sugerir->options['campeon']->value,
+            'build' => $sugerir->options['build']->value,
+            'rol' => $sugerir->options['rol']->value,
+            'discord_id' => $interaction->user->id,
+          ]
         );
+        $interaction->respondWithMessage(
+          $this
+            ->message()
+            ->title('Sugerencia enviada!')
+            ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado.")
+            ->build()
+        );
+      }
+      
+      if ($listado) {
+        $usuarios = "";
+        $builds = "";
+        $votos = "";
+
+        $sugerencias = DB::table('sugerencias')
+          ->where('jugado', false)
+          ->orderBy('votos', 'desc')
+          ->get();
+
+        foreach ($sugerencias as $sugerencia) {
+            $usuarios .= "<@{$sugerencia->discord_id}>\n";
+            $builds .= "{$sugerencia->campeon} en {$sugerencia->rol}; {$sugerencia->build}\n";
+            $votos .= "{$sugerencia->votos}\n";
+        }
+
+        $interaction->respondWithMessage(
+            $this->message('Participantes del torneo')
+            ->field('Usuario que hizo la sugerencia', $usuarios)
+            ->field('Build', $builds)
+            ->field('Votos', $votos)
+            ->build(),
+            ephemeral: true
+        );
+      }
+
+      if ($votar) {
+        $sugerencia_id = $votar->options['sugerencia']->value;
+        $sugerencia = DB::table('sugerencias')
+                      ->where('id', $sugerencia_id)
+                      ->first();
+
+        $user = DB::table('users')
+          ->where('discord_id', $interaction->user->id)
+          ->first();
+
+        if ($user->ultimo_voto === null || Carbon::parse($user->ultimo_voto)->lt(Carbon::now()->subDay())) {
+          $now = Carbon::now('America/Chicago');
+          DB::table('users')
+            ->where('discord_id', $interaction->user->id)
+            ->update(['ultimo_voto' => $now]);
+          DB::table('sugerencias')
+            ->where('id', $sugerencia_id)
+            ->increment('votos');
+          $sugerencia->votos++;
+          $interaction->respondWithMessage(
+            $this->message("Voto registrado!")
+              ->content("Haz votado por {$sugerencia->campeon} en {$sugerencia->rol}\nVotos actuales: {$sugerencia->votos}\nPodrás volver a votar en 24 horas.")
+              ->build(),
+          );
+        } else {
+          $hoursLeft = 24 - Carbon::now('America/Chicago')->diffInHours(Carbon::parse($user->ultimo_voto));
+          $interaction->respondWithMessage(
+            $this->message("Voto prematuro! D:")
+              ->content("Aún no puedes votar por otra sugerencia. Vuelve en {$hoursLeft} horas.")
+              ->error()
+              ->build(),
+          );
+        }
+      }
     }
 
     public function options()
-{
-    $option = new Option($this->discord());
-    $option2 = new Option($this->discord());
-    
-    return [
-        $option
-          ->setName('sugerir')
-          ->setDescription('Sugerir un nuevo campeón')
-          ->setType(Option::SUB_COMMAND),
-        $option2
-          ->setName('listado')
-          ->setDescription('Ver los campeones sugeridos')
-          ->setType(Option::SUB_COMMAND),
-    ];
-}
+    {
+        $option_sugerir = new Option($this->discord());
+        $option_sugerir_campeon = new Option($this->discord());
+        $option_sugerir_rol = new Option($this->discord());
+        $option_sugerir_build = new Option($this->discord());
+        $option_listado = new Option($this->discord());
+        $option_votar = new Option($this->discord());
+        $option_sugerencia = new Option($this->discord());
+                  
+        $option_sugerencia
+          ->setName('sugerencia')
+          ->setDescription('La sugerencia a la que quieres votar')
+          ->setType(Option::STRING)
+          ->setRequired(true);
+
+        $sugerencias = DB::table('sugerencias')
+          ->where('jugado', 0)
+          ->get();
+        foreach ($sugerencias as $sugerencia) {
+          $choice = (new Choice($this->discord()))->setName("{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}")->setValue((string) $sugerencia->id);
+          $option_sugerencia->addChoice($choice);
+        }
+
+        return [
+          $option_sugerir
+            ->setName('sugerir')
+            ->setDescription('Sugerir un nuevo campeón')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption(
+                $option_sugerir_campeon
+                  ->setName('campeon')
+                  ->setDescription('Nombre del campeón')
+                  ->setType(Option::STRING)
+                  ->setRequired(true)
+            )
+            ->addOption(
+              $option_sugerir_build
+              ->setName('build')
+              ->setDescription('Cómo se debería armar el campeon')
+              ->setType(Option::STRING)
+              ->setRequired(true))
+            ->addOption(
+                $option_sugerir_rol
+                  ->setName('rol')
+                  ->setDescription('Rol del campeón')
+                  ->setType(Option::STRING)
+                  ->setRequired(true)
+            ),
+          
+          $option_listado
+            ->setName('listado')
+            ->setDescription('Ver los campeones sugeridos')
+            ->setType(Option::SUB_COMMAND),
+
+          $option_votar
+            ->setName('votar')
+            ->setDescription('Vota por un campeón')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption($option_sugerencia),
+        ];
+    }
 }
