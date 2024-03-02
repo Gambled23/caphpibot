@@ -83,6 +83,7 @@ class sugerirCampeon extends SlashCommand
         $votos = "";
 
         $sugerencias = DB::table('sugerencias')
+          ->where('jugado', false)
           ->orderBy('votos', 'desc')
           ->get();
 
@@ -155,7 +156,7 @@ class sugerirCampeon extends SlashCommand
           ->setRequired(true);
 
         $sugerencias = DB::table('sugerencias')
-          ->where('jugado', false)
+          ->where('jugado', 0)
           ->get();
         foreach ($sugerencias as $sugerencia) {
           $choice = (new Choice($this->discord()))->setName("{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}")->setValue((string) $sugerencia->id);

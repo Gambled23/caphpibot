@@ -1,0 +1,89 @@
+<?php
+
+namespace App\SlashCommands;
+
+use Illuminate\Support\Facades\DB;
+use Laracord\Commands\SlashCommand;
+use Discord\Parts\Interactions\Command\Option;
+use Discord\Parts\Interactions\Command\Choice;
+use App\Models\Sugerencia;
+use Carbon\Carbon;
+
+class sugerenciaJugada extends SlashCommand
+{
+    /**
+     * The slash command name.
+     *
+     * @var string
+     */
+    protected $name = 'sugerencia-jugada';
+
+    /**
+     * The slash command description.
+     *
+     * @var string
+     */
+    protected $description = 'Elimina una sugerencia (Si ya se jugó o no se planea jugar).';
+
+    /**
+     * The command options.
+     *
+     * @var array
+     */
+    protected $options = [];
+
+    /**
+     * Indiciates whether the slash command requires admin permissions.
+     *
+     * @var bool
+     */
+    protected $admin = true;
+
+    /**
+     * Indicates whether the slash command should be displayed in the commands list.
+     *
+     * @var bool
+     */
+    protected $hidden = false;
+
+    /**
+     * Handle the slash command.
+     *
+     * @param  \Discord\Parts\Interactions\Interaction  $interaction
+     * @return void
+     */
+    public function handle($interaction)
+    {
+        $sugerencia_id = $interaction->data->options['sugerencia']->value;
+        DB::table('sugerencias')
+            ->where('id', $sugerencia_id)
+            ->update(['jugado' => true]);
+        $interaction->respondWithMessage(
+            $this
+              ->message()
+              ->title('Sugerencia eliminada')
+              ->content("Haz marcado la sugerencia como jugada.\nQuizá sea un buen momento para avisarle a la capibanda que ya jugaste la sugerencia 🤔.\n\nO que fue una babosada de sugerencia.")
+              ->build()
+        );
+    }
+
+    public function options(){
+        $option = new Option($this->discord());
+        $option
+            ->setName('sugerencia')
+            ->setDescription('La sugerencia que se va a tachar.')
+            ->setType(Option::STRING)
+            ->setRequired(true);
+
+        $sugerencias = DB::table('sugerencias')
+          ->where('jugado', 0)
+          ->get();
+
+        foreach ($sugerencias as $sugerencia) {
+            $choice = (new Choice($this->discord()))->setName("{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}")->setValue((string) $sugerencia->id);
+            $option->addChoice($choice);
+        }
+
+        return [$option];
+    }
+}

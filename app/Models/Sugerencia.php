@@ -17,6 +17,7 @@ class Sugerencia extends Model
         'rol',
         'discord_id',
         'votos',
+        'jugado',
     ];
 
     public function user()

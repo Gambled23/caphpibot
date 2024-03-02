@@ -24,7 +24,7 @@ class ping extends SlashCommand
      *
      * @var string
      */
-    protected $description = '3';
+    protected $description = '5';
 
     /**
      * The command options.
