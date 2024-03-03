@@ -6,8 +6,9 @@ use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
-
 use Carbon\Carbon;
+
+include 'registrarUsuario.php';
 
 class torneos extends SlashCommand
 {
@@ -54,6 +55,8 @@ class torneos extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
+        
         $options = $interaction->data->options;
 
         $months = [

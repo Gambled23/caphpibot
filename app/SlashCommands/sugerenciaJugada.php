@@ -9,6 +9,8 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Sugerencia;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class sugerenciaJugada extends SlashCommand
 {
     /**
@@ -54,6 +56,8 @@ class sugerenciaJugada extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
+        
         $sugerencia_id = $interaction->data->options['sugerencia']->value;
         DB::table('sugerencias')
             ->where('id', $sugerencia_id)
@@ -63,7 +67,8 @@ class sugerenciaJugada extends SlashCommand
               ->message()
               ->title('Sugerencia eliminada')
               ->content("Haz marcado la sugerencia como jugada.\nQuizá sea un buen momento para avisarle a la capibanda que ya jugaste la sugerencia 🤔.\n\nO que fue una babosada de sugerencia.")
-              ->build()
+              ->build(),
+              ephemeral: true
         );
     }
 

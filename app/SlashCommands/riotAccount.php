@@ -8,6 +8,8 @@ use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
 
+include 'registrarUsuario.php';
+
 class RiotAccount extends SlashCommand
 {
     /**
@@ -53,41 +55,21 @@ class RiotAccount extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
+
         $data = $interaction->data;
         $registrar = $data->options['registrar'];
         $info = $data->options['info'];
-        if ($registrar) {
-            // Si la tag empieza con 0 (elcapibe#0429)
-            if (strlen($registrar->options['tagline']->value) == 3) { 
-                $riot_id = $registrar->options['username']->value . '#0' . $registrar->options['tagline']->value;
-            }
-            else{
-                $riot_id = $registrar->options['username']->value . '#' . $registrar->options['tagline']->value;
-            }
-
-            
-            //Crear usuario
-            $user = User::firstOrCreate(
+        if ($registrar) {        
+            $user = User::updateOrCreate(
                 ['discord_id' => $interaction->user->id],
                 [
                     'username' => $interaction->user->username,
-                    'riot_id' => $riot_id,
+                    'riot_id' => "{$registrar->options['username']->value}#{$registrar->options['tagline']->value}",
                     'region' => $registrar->options['region']->value ?? 'lan',
-                    'is_admin' => false, // or true, depending on the user
                 ]
             );
 
-            if (!$user->wasRecentlyCreated) {
-                $interaction->respondWithMessage(
-                    $this
-                      ->message()
-                      ->title('Cuenta de Riot ya registrada')
-                      ->content("Parece que ya has registrado tu cuetna de lol, si deseas cambiarla, contacta a un administrador.")
-                      ->error()
-                      ->build(),
-                      ephemeral: true
-                );
-            }
             $interaction->respondWithMessage(
                 $this
                   ->message()

@@ -10,6 +10,8 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class ping extends SlashCommand
 {
     /**
@@ -24,7 +26,7 @@ class ping extends SlashCommand
      *
      * @var string
      */
-    protected $description = '5';
+    protected $description = 'esteesuncomandopruebaquenosirveparanadamásqueparallevarlacuentadecuántasveceslahecagado: 6';
 
     /**
      * The command options.
@@ -55,16 +57,17 @@ class ping extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
         $respuesta = $interaction->data->options['respuesta']->value;
         
         $now = Carbon::now('America/Chicago');
         $interaction->respondWithMessage(
             $this
               ->message()
-              ->title('ping')
-              ->content("Pong! {$respuesta} {$now}")
+              ->title("{$respuesta}")
+              ->content("También lo uso para probar cosas\ncomo imprimir el ahora {$now}\nmientras vivo en el ayer\ny el mañana no existe")
               ->button('Hello', fn (Interaction $interaction) => $interaction->respondWithMessage(
-                $this->message('Well hello to you!')->build(),
+                $this->message('Well hello to you!AYUDA')->build(),
                 ephemeral: true
                 ), emoji: '👋')
               ->build()
@@ -90,6 +93,7 @@ class ping extends SlashCommand
                 ->setName('respuesta')
                 ->setDescription('la respuesta que dará el bot al comando /ping')
                 ->setType(Option::STRING)
+                ->setRequired(true)
                 ->addChoice($choice1)
                 ->addChoice($choice2)
                 ->addChoice($choice3)

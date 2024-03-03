@@ -11,6 +11,8 @@ use App\Models\Torneo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class torneoInfo extends SlashCommand
 {
     /**
@@ -79,6 +81,8 @@ class torneoInfo extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
+        
         $torneoId = $interaction->data->options['torneo']->value;
         $torneo = Torneo::where('id', $torneoId)->first();
         $interaction->respondWithMessage(
