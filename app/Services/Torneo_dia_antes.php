@@ -14,7 +14,7 @@ class Torneo_dia_antes extends Service
     /**
      * The service interval.
      */
-    protected int $interval = 20;
+    protected int $interval = 86400;
     /**
      * Handle the service.
      */
@@ -43,7 +43,7 @@ class Torneo_dia_antes extends Service
             ->whereBetween('fecha', [$now, $oneDayFromNow])
             ->get();
 
-        $channel = $this->discord()->getChannel('1212412059019649086');
+        $channel = $this->discord()->getChannel('1199887896488980593');
         if ($upcomingTorneos->count() > 0) {
             foreach ($upcomingTorneos as $torneo) {
                 $this

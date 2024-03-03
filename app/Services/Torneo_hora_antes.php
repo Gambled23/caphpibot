@@ -26,7 +26,7 @@ class Torneo_hora_antes extends Service
             ->whereBetween('fecha', [$now, $oneHourFromNow])
             ->get();
 
-        $channel = $this->discord()->getChannel('1212412059019649086');
+        $channel = $this->discord()->getChannel('1199887896488980593');
         if ($upcomingTorneos->count() > 0) {
             foreach ($upcomingTorneos as $torneo) {
                 $this
