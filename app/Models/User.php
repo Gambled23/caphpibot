@@ -9,6 +9,8 @@ class User extends Model
 {
     use HasApiTokens;
 
+    protected $primaryKey = 'discord_id';
+    
     /**
      * The attributes that are mass assignable.
      *

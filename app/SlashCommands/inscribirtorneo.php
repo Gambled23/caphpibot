@@ -10,6 +10,8 @@ use App\Models\Torneo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class inscribirtorneo extends SlashCommand
 {
     /**
@@ -55,11 +57,12 @@ class inscribirtorneo extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
         $usuario = DB::table('users')
-        ->where('discord_id', $interaction->user->id)
-        ->first();
+                    ->where('discord_id', $interaction->user->id)
+                    ->first();
 
-        if ($usuario) {
+        if ($usuario->riot_id) {
             $inscrito = DB::table('torneos_users')
                 ->where('discord_id', $interaction->user->id)
                 ->where('torneo_id', $interaction->data->options['torneo']->value)

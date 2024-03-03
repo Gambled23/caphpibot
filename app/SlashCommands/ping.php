@@ -10,6 +10,8 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class ping extends SlashCommand
 {
     /**
@@ -24,7 +26,7 @@ class ping extends SlashCommand
      *
      * @var string
      */
-    protected $description = '5';
+    protected $description = '6';
 
     /**
      * The command options.
@@ -55,6 +57,7 @@ class ping extends SlashCommand
      */
     public function handle($interaction)
     {
+        registrarUsuario($interaction);
         $respuesta = $interaction->data->options['respuesta']->value;
         
         $now = Carbon::now('America/Chicago');

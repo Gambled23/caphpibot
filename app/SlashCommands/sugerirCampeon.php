@@ -9,6 +9,8 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Sugerencia;
 use Carbon\Carbon;
 
+include 'registrarUsuario.php';
+
 class sugerirCampeon extends SlashCommand
 {
     /**
@@ -54,6 +56,8 @@ class sugerirCampeon extends SlashCommand
      */
     public function handle($interaction)
     {
+      registrarUsuario($interaction);
+      
       $data = $interaction->data;
       $sugerir = $data->options['sugerir'];
       $listado = $data->options['listado'];
