@@ -67,7 +67,8 @@ class sugerenciaJugada extends SlashCommand
               ->message()
               ->title('Sugerencia eliminada')
               ->content("Haz marcado la sugerencia como jugada.\nQuizá sea un buen momento para avisarle a la capibanda que ya jugaste la sugerencia 🤔.\n\nO que fue una babosada de sugerencia.")
-              ->build()
+              ->build(),
+              ephemeral: true
         );
     }
 
