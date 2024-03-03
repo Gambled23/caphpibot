@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->string('discord_id')->primary();
             $table->string('username')->index();
-            $table->string('riot_id')->index();
-            $table->string('region')->default('lan');
+            $table->string('riot_id')->nullable();
+            $table->string('region')->nullable();
             $table->boolean('is_admin')->default(false);
             $table->dateTime('ultimo_voto')->nullable();
             $table->timestamps();

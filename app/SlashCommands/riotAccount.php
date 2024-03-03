@@ -56,24 +56,14 @@ class RiotAccount extends SlashCommand
         $data = $interaction->data;
         $registrar = $data->options['registrar'];
         $info = $data->options['info'];
-        if ($registrar) {
-            // Si la tag empieza con 0 (elcapibe#0429)
-            if (strlen($registrar->options['tagline']->value) == 3) { 
-                $riot_id = $registrar->options['username']->value . '#0' . $registrar->options['tagline']->value;
-            }
-            else{
-                $riot_id = $registrar->options['username']->value . '#' . $registrar->options['tagline']->value;
-            }
-
-            
-            //Crear usuario
+        if ($registrar) {        
             $user = User::firstOrCreate(
                 ['discord_id' => $interaction->user->id],
                 [
                     'username' => $interaction->user->username,
-                    'riot_id' => $riot_id,
+                    'riot_id' => $registrar->options['tagline']->value,
                     'region' => $registrar->options['region']->value ?? 'lan',
-                    'is_admin' => false, // or true, depending on the user
+                    'is_admin' => false,
                 ]
             );
 
