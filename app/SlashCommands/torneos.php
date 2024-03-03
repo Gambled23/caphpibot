@@ -88,6 +88,8 @@ class torneos extends SlashCommand
               ->title("{$torneo->nombre}")
               ->content("{$torneo->descripcion} \nFecha: {$torneo->fecha}")
               ->build());
+
+        dd('esta no es la mejor manera de actualizar los application commands jej');
     }
 
     public function options()

@@ -79,6 +79,7 @@ class sugerirCampeon extends SlashCommand
             ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado.")
             ->build()
         );
+        dd('esta no es la mejor manera de actualizar los application commands jej');
       }
       
       if ($listado) {
