@@ -25,7 +25,7 @@ class actualizar extends Command
      *
      * @var bool
      */
-    protected $admin = false;
+    protected $admin = true;
 
     /**
      * Determines whether the command should be displayed in the commands list.

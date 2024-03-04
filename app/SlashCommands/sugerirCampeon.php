@@ -79,8 +79,6 @@ class sugerirCampeon extends SlashCommand
             ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado.")
             ->build()
         );
-        sleep(10);
-        dd('esta no es la mejor manera de actualizar los application commands jej');
       }
       
       if ($listado) {
@@ -94,14 +92,14 @@ class sugerirCampeon extends SlashCommand
           ->get();
 
         foreach ($sugerencias as $sugerencia) {
-            $usuarios .= "<@{$sugerencia->discord_id}>\n";
+            $usuarios .= "{$sugerencia->id} - <@{$sugerencia->discord_id}>\n";
             $builds .= "{$sugerencia->campeon} en {$sugerencia->rol}; {$sugerencia->build}\n";
             $votos .= "{$sugerencia->votos}\n";
         }
 
         $interaction->respondWithMessage(
             $this->message('Sugerencias de campeones')
-            ->field('Usuario que hizo la sugerencia', $usuarios)
+            ->field('ID - Usuario', $usuarios)
             ->field('Build', $builds)
             ->field('Votos', $votos)
             ->build(),
@@ -113,7 +111,24 @@ class sugerirCampeon extends SlashCommand
         $sugerencia = DB::table('sugerencias')
                       ->where('id', $sugerencia_id)
                       ->first();
-
+        if (!$sugerencia) {
+          $interaction->respondWithMessage(
+            $this->message("Sugerencia no existente")
+              ->content("La ID que metiste no existe en las sugerencias, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+              ->error()
+              ->build(),
+          );
+          return;
+        }
+        if ($sugerencia->jugado) {
+          $interaction->respondWithMessage(
+            $this->message("Sugerencia ya jugada")
+              ->content("La ID que metiste pertenece a una sugerencia ya jugada, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+              ->error()
+              ->build(),
+          );
+          return;
+        }
         $user = DB::table('users')
           ->where('discord_id', $interaction->user->id)
           ->first();
@@ -156,17 +171,9 @@ class sugerirCampeon extends SlashCommand
                   
         $option_sugerencia
           ->setName('sugerencia')
-          ->setDescription('La sugerencia a la que quieres votar')
-          ->setType(Option::STRING)
+          ->setDescription('La sugerencia (ID) a la que quieres votar')
+          ->setType(Option::INTEGER)
           ->setRequired(true);
-
-        $sugerencias = DB::table('sugerencias')
-          ->where('jugado', 0)
-          ->get();
-        foreach ($sugerencias as $sugerencia) {
-          $choice = (new Choice($this->discord()))->setName("{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}")->setValue((string) $sugerencia->id);
-          $option_sugerencia->addChoice($choice);
-        }
 
         return [
           $option_sugerir
