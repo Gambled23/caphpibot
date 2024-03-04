@@ -70,6 +70,7 @@ class sugerenciaJugada extends SlashCommand
               ->build(),
               ephemeral: true
         );
+        sleep(10);
         dd('esta no es la mejor manera de actualizar los application commands jej');
     }
 
