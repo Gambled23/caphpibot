@@ -144,9 +144,10 @@ class sugerirCampeon extends SlashCommand
           $sugerencia->votos++;
           $interaction->respondWithMessage(
             $this->message("Voto registrado!")
-              ->content("Haz votado por {$sugerencia->campeon} en {$sugerencia->rol}\nVotos actuales: {$sugerencia->votos}\nPodrás volver a votar en 24 horas.")
+              ->content("Haz votado por {$sugerencia->campeon} en {$sugerencia->rol}\nVotos actuales: {$sugerencia->votos}\nPodrás volver a votar en 24 horas.\n\nAdemás, haz ganado $25 capicoins por votar.")
               ->build(),
           );
+          agregarCapicoins($interaction->user->id, 25);
         } else {
           $hoursLeft = 24 - Carbon::now('America/Chicago')->diffInHours(Carbon::parse($user->ultimo_voto));
           $interaction->respondWithMessage(
