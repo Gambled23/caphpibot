@@ -8,7 +8,7 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Torneo;
 use Carbon\Carbon;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class torneos extends SlashCommand
 {

@@ -8,7 +8,7 @@ use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class RiotAccount extends SlashCommand
 {

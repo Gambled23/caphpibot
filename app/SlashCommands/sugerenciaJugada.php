@@ -9,7 +9,7 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Sugerencia;
 use Carbon\Carbon;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class sugerenciaJugada extends SlashCommand
 {

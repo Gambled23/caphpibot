@@ -10,7 +10,7 @@ use App\Models\Torneo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class inscribirtorneo extends SlashCommand
 {
