@@ -8,7 +8,7 @@ use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\User;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class RiotAccount extends SlashCommand
 {
@@ -91,6 +91,7 @@ class RiotAccount extends SlashCommand
                       ->title("Cuenta de {$user->username}")
                       ->content("
                       https://www.op.gg/summoners/{$user->region}/{$parts[0]}-{$parts[1]}")
+                      ->footerText("Capicoins: $" . ($user->capicoins))
                       ->build()
                 );
             }
@@ -101,7 +102,8 @@ class RiotAccount extends SlashCommand
                       ->message()
                       ->title("Cuenta de {$user->username}")
                       ->content("{$user->username} aún no ha registrado su cuenta de Riot en el servidor.\n{$user->username} debe utilizar el comando\n/capibaccount registrar <datos>\npara registrarla. ¡Avisale!")
-                      ->error()
+                      ->footerText("Capicoins: $" . ($user->capicoins))
+                      ->warning()
                       ->build()
                 );
             }

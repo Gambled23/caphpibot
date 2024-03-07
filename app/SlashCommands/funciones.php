@@ -10,3 +10,11 @@ if (!function_exists('registrarUsuario')) {
         );
     }
 }
+
+if (!function_exists('agregarCapicoins')) {
+    function agregarCapicoins ($discord_id, $capicoins) {
+        $user = User::where('discord_id', $discord_id)->first();
+        $user->capicoins += $capicoins;
+        $user->save();
+    }
+}

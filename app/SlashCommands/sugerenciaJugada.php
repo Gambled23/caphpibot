@@ -9,7 +9,7 @@ use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Sugerencia;
 use Carbon\Carbon;
 
-include 'registrarUsuario.php';
+include 'funciones.php';
 
 class sugerenciaJugada extends SlashCommand
 {
@@ -59,9 +59,16 @@ class sugerenciaJugada extends SlashCommand
         registrarUsuario($interaction);
         
         $sugerencia_id = $interaction->data->options['sugerencia']->value;
+        $sugerencia = DB::table('sugerencias')
+            ->where('id', $sugerencia_id)
+            ->select('discord_id')
+            ->first();
+
         DB::table('sugerencias')
             ->where('id', $sugerencia_id)
             ->update(['jugado' => true]);
+
+        $discord_id = $sugerencia->discord_id;
         $interaction->respondWithMessage(
             $this
               ->message()
@@ -70,8 +77,7 @@ class sugerenciaJugada extends SlashCommand
               ->build(),
               ephemeral: true
         );
-        sleep(10);
-        dd('esta no es la mejor manera de actualizar los application commands jej');
+        agregarCapicoins($discord_id, 25);
     }
 
     public function options(){
