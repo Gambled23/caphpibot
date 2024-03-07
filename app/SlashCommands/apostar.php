@@ -66,7 +66,8 @@ class apostar extends SlashCommand
                     $this
                       ->message()
                       ->title('Capicoins insuficientes')
-                      ->content("No tienes suficientes capicoins para apostar esa cantidad\nCapicoins actuales: {$userMoney}")
+                      ->content("No tienes suficientes capicoins para apostar esa cantidad")
+                      ->footerText("Capicoins actuales: {$userMoney}")
                       ->error()
                       ->build()
                 );
@@ -76,12 +77,13 @@ class apostar extends SlashCommand
             $ladoMoneda = $coin->options['cara']->value;
             $numrand = rand(1, 2);
             if ($ladoMoneda == $numrand) {
-                $ganancia = $capicoins * 2;
+                $ganancia = $capicoins * .75;
                 $interaction->respondWithMessage(
                     $this
                       ->message()
                       ->title('Ganador 🪙🎉')
                       ->content("Has ganado {$ganancia} capicoins")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
                       ->build()
                 );
             } else {
@@ -96,6 +98,8 @@ class apostar extends SlashCommand
                       ->message()
                       ->title('Perdedor :c')
                       ->content("Ha salido {$numrand}, mejor suerte la próxima vez!")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
+                      ->warning()
                       ->build()
                 );
             }
@@ -107,7 +111,8 @@ class apostar extends SlashCommand
                     $this
                       ->message()
                       ->title('Capicoins insuficientes')
-                      ->content("No tienes suficientes capicoins para apostar esa cantidad\nCapicoins actuales: {$userMoney}")
+                      ->content("No tienes suficientes capicoins para apostar esa cantidad")
+                      ->footerText("Capicoins actuales: {$userMoney}")
                       ->error()
                       ->build()
                 );
@@ -122,6 +127,7 @@ class apostar extends SlashCommand
                       ->message()
                       ->title('Ganador 🪙🎉')
                       ->content("Has ganado {$ganancia} capicoins")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
                       ->build()
                 );
             } else {
@@ -131,6 +137,8 @@ class apostar extends SlashCommand
                       ->message()
                       ->title('Perdedor :c')
                       ->content("Ha salido el número {$numrand}, mejor suerte la próxima vez!")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
+                      ->warning()
                       ->build()
                 );
             }
@@ -176,18 +184,15 @@ class apostar extends SlashCommand
                 ->setName('flip-da-coin')
                 ->setDescription('Lanza una moneda y gana hasta el doble de capicoins!')
                 ->setType(Option::SUB_COMMAND)
-                ->addOption(
-                    $option_capicoins
-            ),
+                ->addOption($option_capicoins)
+                ->addOption($option_ladoMoneda),
 
             $subcommand_dado
                 ->setName('dado')
                 ->setDescription('Lanza un dado y gana hasta el triple de capicoins!')
                 ->setType(Option::SUB_COMMAND)
-                ->addOption(
-                    $option_capicoins,
-                    $option_ladoDado
-            ),
+                ->addOption($option_capicoins)
+                ->addOption($option_ladoDado),
             
         ];
     }
