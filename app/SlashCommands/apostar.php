@@ -56,6 +56,7 @@ class apostar extends SlashCommand
         registrarUsuario($interaction);
         $coin = $interaction->data->options['flip-da-coin'];
         $dado = $interaction->data->options['dado'];
+        $slots = $interaction->data->options['slots'];
         $user = User::where('discord_id', $interaction->member->user->id)->first();
         $userMoney = $user->capicoins;
 
@@ -143,6 +144,80 @@ class apostar extends SlashCommand
                 );
             }
         }
+        if ($slots) {
+            $capicoins = $slots->options['capicoins']->value;
+            if ($capicoins > $userMoney) {
+                $interaction->respondWithMessage(
+                    $this
+                      ->message()
+                      ->title('Capicoins insuficientes')
+                      ->content("No tienes suficientes capicoins para apostar esa cantidad")
+                      ->footerText("Capicoins actuales: {$userMoney}")
+                      ->error()
+                      ->build()
+                );
+                return;
+            }
+            $emojiMap = [
+                1 => '<:rango_hierro:1201268624103583754>',
+                2 => '<:rango_plata:1201268628851540050>',
+                3 => '<:rango_oro:1201268627790385363>',
+                4 => '<:rango_platino:1201268631728816218>',
+                5 => '<:rango_diamante:1201268621318574250>',
+                6 => '<:rango_maestro:1201268625470931027>',
+                7 => '<:rango_granmaestro:1201268622924980355>',
+                8 => '<:rango_challenger:1201268620190285947>',
+            ];
+
+            $numrand1 = rand(1, 8);
+            $numrand2 = rand(1, 8);
+            $numrand3 = rand(1, 8);
+
+            if ($numrand1 == $numrand2 && $numrand2 == $numrand3) {
+                $ganancia = $capicoins * $numrand1;
+                $interaction->respondWithMessage(
+                    $this
+                      ->message()
+                      ->title('🎉🪙 GANADOOOOOOR 🪙🎉')
+                      ->content("{$emojiMap[$numrand1]} - {$emojiMap[$numrand2]} - {$emojiMap[$numrand3]}
+                      \nHas ganado {$ganancia} capicoins")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
+                      ->build()
+                );
+            } 
+            elseif ($numrand1 == $numrand2 || $numrand2 == $numrand3 || $numrand1 == $numrand3) {
+                $equalNumber = 0;
+                if ($numrand1 == $numrand2) {
+                    $equalNumber = $numrand1;
+                } elseif ($numrand2 == $numrand3) {
+                    $equalNumber = $numrand2;
+                } elseif ($numrand1 == $numrand3) {
+                    $equalNumber = $numrand1;
+                }
+                $ganancia = ($capicoins * $equalNumber) / 3;
+                $interaction->respondWithMessage(
+                    $this
+                      ->message()
+                      ->title('Ganador 🪙🎉')
+                      ->content( "{$emojiMap[$numrand1]} - {$emojiMap[$numrand2]} - {$emojiMap[$numrand3]}
+                      \nHas ganado {$ganancia} capicoins")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
+                      ->build()
+                );
+            }
+            else {
+                $ganancia = -1 * $capicoins;
+                $interaction->respondWithMessage(
+                    $this
+                      ->message()
+                      ->title('Perdedor :c')
+                      ->content("{$emojiMap[$numrand1]} - {$emojiMap[$numrand2]} - {$emojiMap[$numrand3]}")
+                      ->footerText("Capicoins actuales: $" . ($userMoney + $ganancia))
+                      ->warning()
+                      ->build()
+                );
+            }
+        }
         agregarCapicoins($interaction->user->id, $ganancia);
     }
 
@@ -179,6 +254,8 @@ class apostar extends SlashCommand
             $option_ladoDado->addChoice($choice);
         }
 
+        $subcommand_slots = new Option($this->discord());
+
         return [
             $subcommand_flipDaCoin
                 ->setName('flip-da-coin')
@@ -194,6 +271,11 @@ class apostar extends SlashCommand
                 ->addOption($option_capicoins)
                 ->addOption($option_ladoDado),
             
+            $subcommand_slots
+                ->setName('slots')
+                ->setDescription('Juega capislots y gana hasta 8 VECES la cantidad apostada!')
+                ->setType(Option::SUB_COMMAND)
+                ->addOption($option_capicoins),
         ];
     }
 }
