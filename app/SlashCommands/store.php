@@ -57,14 +57,45 @@ class store extends SlashCommand
     public function handle($interaction)
     {
         registrarUsuario($interaction);
-        
-        $interaction->respondWithMessage(
-            $this
-              ->message()
-              ->title('store')
-              ->content('Hello world!')
-              ->build()
-        );
+        $listado = $interaction->data->options['listado'];
+        $comprar = $interaction->data->options['comprar'];
+        $productos = DB::table('productos')->get();
+
+        if ($listado) {
+            $nombre = "";
+            $descripcion = "";
+            $precio = "";
+    
+            foreach ($productos as $producto) {
+                $nombre .= "{$producto->id} - {$producto->nombre} \n";
+                $descripcion .= "{$producto->descripcion}\n";
+                $precio .= "\${$producto->precio}\n";
+            }
+    
+            $interaction->respondWithMessage(
+                $this->message('Tienda')
+                ->field('ID - Producto', $nombre)
+                ->field('Descripción', $descripcion)
+                ->field('Precio', $precio)
+                ->build(),
+            );
+        } 
+
+        if ($comprar) {
+            $producto = $comprar->data->options['producto']->value;
+            switch ($producto) {
+                case 1:
+                    # code...
+                    break;
+                case 2:
+                    # code...
+                    break;
+                case 3:
+                    # code...
+                    break;
+            }
+        }
+
     }
 
     /**
@@ -75,6 +106,26 @@ class store extends SlashCommand
      */
     public function options()
     {
-        return [];
+        return [
+            new Option($this->discord(), [
+                'name' => 'listado',
+                'description' => 'Ver los articulos disponibles en la tienda',
+                'type' => Option::SUB_COMMAND,
+            ]),
+
+            new Option($this->discord(), [
+                'name' => 'comprar',
+                'description' => 'Comprar un articulo de la tienda',
+                'type' => Option::SUB_COMMAND,
+                'options' => [
+                    new Option($this->discord(), [
+                        'name' => 'producto',
+                        'description' => 'ID del articulo que quieres comprar',
+                        'type' => Option::INTEGER,
+                        'required' => true,
+                    ]),
+                ],
+            ]),
+        ];
     }
 }

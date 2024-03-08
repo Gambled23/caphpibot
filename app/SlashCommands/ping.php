@@ -26,7 +26,7 @@ class ping extends SlashCommand
      *
      * @var string
      */
-    protected $description = 'esteesuncomandopruebaquenosirveparanadamásqueparallevarlacuentadecuántasveceslahecagado: 6';
+    protected $description = 'esteesuncomandopruebaquenosirveparanadamásqueparallevarlacuentadecuántasveceslahecagado: 8';
 
     /**
      * The command options.
