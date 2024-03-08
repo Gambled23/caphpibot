@@ -85,13 +85,28 @@ class store extends SlashCommand
             $producto = $comprar->data->options['producto']->value;
             switch ($producto) {
                 case 1:
-                    # code...
+                    $interaction->respondWithMessage(
+                        $this->message()
+                        ->title('Democracia')
+                        ->content("Compra un voto extra para un campeón sugerido")
+                        ->build(),
+                    );
                     break;
                 case 2:
-                    # code...
+                    $interaction->respondWithMessage(
+                        $this->message()
+                        ->title('Anarquía')
+                        ->content('Quitale un voto a un campeón sugerido')
+                        ->build(),
+                    );
                     break;
                 case 3:
-                    # code...
+                    $interaction->respondWithMessage(
+                        $this->message()
+                        ->title('Cállese alv')
+                        ->content('Silencia un miembro (incluso al capibe) durante una hora')
+                        ->build(),
+                    );
                     break;
             }
         }
@@ -111,20 +126,6 @@ class store extends SlashCommand
                 'name' => 'listado',
                 'description' => 'Ver los articulos disponibles en la tienda',
                 'type' => Option::SUB_COMMAND,
-            ]),
-
-            new Option($this->discord(), [
-                'name' => 'comprar',
-                'description' => 'Comprar un articulo de la tienda',
-                'type' => Option::SUB_COMMAND,
-                'options' => [
-                    new Option($this->discord(), [
-                        'name' => 'producto',
-                        'description' => 'ID del articulo que quieres comprar',
-                        'type' => Option::INTEGER,
-                        'required' => true,
-                    ]),
-                ],
             ]),
         ];
     }

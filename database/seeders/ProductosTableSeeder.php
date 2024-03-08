@@ -26,7 +26,7 @@ class ProductosTableSeeder extends Seeder
         ]);
 
         Producto::create([
-            'nombre' => 'Cállese alv',
+            'nombre' => 'Censura',
             'descripcion' => 'Silencia un miembro (incluso al capibe) durante una hora',
             'precio' => 1000,
         ]);
