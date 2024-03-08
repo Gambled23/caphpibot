@@ -78,7 +78,7 @@ class apostar extends SlashCommand
             $ladoMoneda = $coin->options['cara']->value;
             $numrand = rand(1, 2);
             if ($ladoMoneda == $numrand) {
-                $ganancia = $capicoins * .75;
+                $ganancia = $capicoins;
                 $interaction->respondWithMessage(
                     $this
                       ->message()
@@ -160,18 +160,20 @@ class apostar extends SlashCommand
             }
             $emojiMap = [
                 1 => '<:rango_hierro:1201268624103583754>',
-                2 => '<:rango_plata:1201268628851540050>',
-                3 => '<:rango_oro:1201268627790385363>',
-                4 => '<:rango_platino:1201268631728816218>',
-                5 => '<:rango_diamante:1201268621318574250>',
-                6 => '<:rango_maestro:1201268625470931027>',
-                7 => '<:rango_granmaestro:1201268622924980355>',
-                8 => '<:rango_challenger:1201268620190285947>',
+                2 => '<:rango_bronce:1215341547000954981>',
+                3 => '<:rango_plata:1201268628851540050>',
+                4 => '<:rango_oro:1201268627790385363>',
+                5 => '<:rango_platino:1201268631728816218>',
+                6 => '<:rango_emerald:1215342943100076043>',
+                7 => '<:rango_diamante:1201268621318574250>',
+                8 => '<:rango_maestro:1201268625470931027>',
+                9 => '<:rango_granmaestro:1201268622924980355>',
+                10 => '<:rango_challenger:1201268620190285947>',
             ];
 
-            $numrand1 = rand(1, 8);
-            $numrand2 = rand(1, 8);
-            $numrand3 = rand(1, 8);
+            $numrand1 = rand(1, 10);
+            $numrand2 = rand(1, 10);
+            $numrand3 = rand(1, 10);
 
             if ($numrand1 == $numrand2 && $numrand2 == $numrand3) {
                 $ganancia = $capicoins * $numrand1;
@@ -259,7 +261,7 @@ class apostar extends SlashCommand
         return [
             $subcommand_flipDaCoin
                 ->setName('flip-da-coin')
-                ->setDescription('Lanza una moneda y gana hasta el doble de capicoins!')
+                ->setDescription('Lanza una moneda y gana capicoins!')
                 ->setType(Option::SUB_COMMAND)
                 ->addOption($option_capicoins)
                 ->addOption($option_ladoMoneda),
@@ -273,7 +275,7 @@ class apostar extends SlashCommand
             
             $subcommand_slots
                 ->setName('slots')
-                ->setDescription('Juega capislots y gana hasta 8 VECES la cantidad apostada!')
+                ->setDescription('Juega capislots y gana hasta 10 VECES la cantidad apostada!')
                 ->setType(Option::SUB_COMMAND)
                 ->addOption($option_capicoins),
         ];
