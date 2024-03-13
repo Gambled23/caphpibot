@@ -7,6 +7,7 @@ use Laracord\Commands\SlashCommand;
 use Discord\Parts\Interactions\Command\Option;
 use Discord\Parts\Interactions\Command\Choice;
 use App\Models\Sugerencia;
+use App\Models\User;
 use Carbon\Carbon;
 
 include 'funciones.php';
@@ -56,13 +57,132 @@ class storecomprar extends SlashCommand
      */
     public function handle($interaction)
     {
-        $interaction->respondWithMessage(
-            $this
-              ->message()
-              ->title('storecomprar')
-              ->content('Hello world!')
-              ->build()
-        );
+        $user = User::where('discord_id', $interaction->member->user->id)->first();
+        $userMoney = $user->capicoins;
+
+        $democracia = $interaction->data->options['democracia'];
+        $anarquia = $interaction->data->options['anarquia'];
+        $censura = $interaction->data->options['censura'];
+        if ($democracia) {
+            if (!comprobarCapicoinsSuficientes($interaction->user->id, 300)) {
+                $interaction->respondWithMessage(
+                    $this->message("Capicoins insuficientes")
+                        ->content("No tienes suficientes capicoins para alterar las elecciones")
+                        ->error()
+                        ->footerText("Capicoins actuales: {$userMoney}")
+                        ->build(),
+                );
+                return;
+            }
+            $democracia_sugerencia = $democracia->options['sugerencia']->value;
+            $sugerencia = DB::table('sugerencias')
+                          ->where('id', $democracia_sugerencia)
+                          ->first();
+            if (!$sugerencia) {
+              $interaction->respondWithMessage(
+                $this->message("Sugerencia no existente")
+                  ->content("La ID que metiste no existe en las sugerencias, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+                  ->error()
+                  ->build(),
+              );
+              return;
+            }
+            if ($sugerencia->jugado) {
+              $interaction->respondWithMessage(
+                $this->message("Sugerencia ya jugada")
+                  ->content("La ID que metiste pertenece a una sugerencia ya jugada, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+                  ->error()
+                  ->build(),
+              );
+              return;
+            }
+            DB::table('sugerencias')
+              ->where('id', $democracia_sugerencia)
+              ->increment('votos');
+            agregarCapicoins($interaction->user->id, -300);
+            $interaction->respondWithMessage(
+                $this
+                  ->message()
+                  ->title('Elecciones compradas!')
+                  ->content("Acabas de comprar un voto extra para la sugerencia de {$sugerencia->campeon} en {$sugerencia->rol}. Gracias por ser un capibito ejemplar.")
+                  ->footerText("Capicoins actuales: {$userMoney}")
+                  ->build()
+            );
+        }
+        if ($anarquia) {
+            if (!comprobarCapicoinsSuficientes($interaction->user->id, 250)) {
+                $interaction->respondWithMessage(
+                    $this->message("Capicoins insuficientes")
+                        ->content("No tienes suficientes capicoins para alterar las elecciones")
+                        ->error()
+                        ->footerText("Capicoins actuales: {$userMoney}")
+                        ->build(),
+                );
+                return;
+            }
+            $anarquia_sugerencia = $anarquia->options['sugerencia']->value;
+            $sugerencia = DB::table('sugerencias')
+                          ->where('id', $anarquia_sugerencia)
+                          ->first();
+            if (!$sugerencia) {
+              $interaction->respondWithMessage(
+                $this->message("Sugerencia no existente")
+                  ->content("La ID que metiste no existe en las sugerencias, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+                  ->error()
+                  ->build(),
+              );
+              return;
+            }
+            if ($sugerencia->jugado) {
+              $interaction->respondWithMessage(
+                $this->message("Sugerencia ya jugada")
+                  ->content("La ID que metiste pertenece a una sugerencia ya jugada, usa /sugereir-campeon listado para ver las sugerencias actuales.")
+                  ->error()
+                  ->build(),
+              );
+              return;
+            }
+            DB::table('sugerencias')
+              ->where('id', $anarquia_sugerencia)
+              ->decrement('votos');
+            agregarCapicoins($interaction->user->id, -250);
+            $interaction->respondWithMessage(
+                $this
+                  ->message()
+                  ->title('Elecciones compradas!')
+                  ->content("Acabas de eliminar un voto para la sugerencia de {$sugerencia->campeon} en {$sugerencia->rol}. Gracias por ser un capibito corrupto.")
+                  ->footerText("Capicoins actuales: {$userMoney}")
+                  ->build()
+            );
+        }
+        if ($censura) {
+            $censura_usuario = $censura->options['usuario']->value;
+            if (!comprobarCapicoinsSuficientes($interaction->user->id, 675)) {
+                $interaction->respondWithMessage(
+                    $this->message("Capicoins insuficientes")
+                        ->content("No tienes suficientes capicoins para censurar la libertad de expresión.")
+                        ->error()
+                        ->footerText("Capicoins actuales: {$userMoney}")
+                        ->build(),
+                );
+                return;
+            }
+            $guild = $this->discord()->guilds->get('id', $interaction->guild_id);
+            $role = $guild->roles->get('name', 'censurado');
+            $member = $guild->members->get('id', $censura_usuario);
+
+            $member->addRole($role);
+            $interaction->respondWithMessage(
+                $this
+                  ->message()
+                  ->title('Censura comprada!')
+                  ->content("Acabas de censurar a <@{$censura_usuario}> por una hora. Gracias por apoyar la libertad de expresión.")
+                  ->footerText("Capicoins actuales: {$userMoney}")
+                  ->build()
+            );
+            agregarCapicoins($interaction->user->id, -675);
+
+        }
     }
 
     /**
@@ -115,7 +235,7 @@ class storecomprar extends SlashCommand
                   ->setType(Option::MENTIONABLE)
                   ->setRequired(true)
             ),
-            
+
         ];
     }
 }
