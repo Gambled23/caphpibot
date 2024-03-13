@@ -18,3 +18,10 @@ if (!function_exists('agregarCapicoins')) {
         $user->save();
     }
 }
+
+if (!function_exists('comprobarCapicoinsSuficientes')) {
+    function comprobarCapicoinsSuficientes ($discord_id, $capicoins) {
+        $user = User::where('discord_id', $discord_id)->first();
+        return $user->capicoins >= $capicoins;
+    }
+}

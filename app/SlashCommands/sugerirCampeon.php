@@ -76,7 +76,7 @@ class sugerirCampeon extends SlashCommand
           $this
             ->message()
             ->title('Sugerencia enviada!')
-            ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado.")
+            ->content("Tu sugerencia de {$sugerencia->campeon} en {$sugerencia->rol} ha sido enviada al capibe para su consideración. Gracias!\n\nSi quieres ver el listado de sugerencias y votar por una, usa el comando /sugerir-campeon listado. Recuerda que solo se jugará la sugerencia más votada cada semana.")
             ->build()
         );
       }
