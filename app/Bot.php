@@ -2,6 +2,8 @@
 
 namespace App;
 
+
+use Discord\Parts\User\Activity;
 use Illuminate\Support\Facades\Route;
 use Laracord\Laracord;
 
@@ -18,5 +20,16 @@ class Bot extends Laracord
             //     'description' => $command->getDescription(),
             // ]));
         });
+    }
+
+    public function afterBoot(): void
+    {
+        $activity = $this->discord()->factory(Activity::class, [
+            'type' => Activity::TYPE_STREAMING,
+            'url' => 'https://www.twitch.tv/elcapibe',
+            'name' => 'League of Capibara',
+        ]);
+
+        $this->discord()->updatePresence($activity);
     }
 }
