@@ -18,7 +18,7 @@ class storecomprar extends SlashCommand
      *
      * @var string
      */
-    protected $name = 'storecomprar';
+    protected $name = 'store-comprar';
 
     /**
      * The slash command description.
@@ -72,46 +72,50 @@ class storecomprar extends SlashCommand
      */
     public function options()
     {
+        $democracia = new Option($this->discord());
+        $democracia_sugerrencia = new Option($this->discord());
+        $anarquia = new Option($this->discord());
+        $anarquia_sugerencia = new Option($this->discord());
+        $censura = new Option($this->discord());
+        $censura_usuario = new Option($this->discord());
+        
         return [
-            new Option($this->discord(), [
-                'name' => 'democracia',
-                'description' => 'Compra un voto extra para un campeón sugerido',
-                'type' => Option::SUB_COMMAND,
-                'options' => [
-                    new Option($this->discord(), [
-                        'name' => 'sugerencia',
-                        'description' => 'ID de la sugerencia a la que quieres añadirle un voto',
-                        'type' => Option::INTEGER,
-                        'required' => true,
-                    ]),
-                ],
-            ]),
-            new Option($this->discord(), [
-                'name' => 'anarquia',
-                'description' => 'Quitale un voto a un campeón sugerido',
-                'type' => Option::SUB_COMMAND,
-                'options' => [
-                    new Option($this->discord(), [
-                        'name' => 'sugerencia',
-                        'description' => 'ID de la sugerencia a la que quieres quitarle un voto',
-                        'type' => Option::INTEGER,
-                        'required' => true,
-                    ]),
-                ],
-            ]),
-            new Option($this->discord(), [
-                'name' => 'censura',
-                'description' => 'Silencia un miembro (incluso al capibe) durante una hora',
-                'type' => Option::SUB_COMMAND,
-                'options' => [
-                    new Option($this->discord(), [
-                        'name' => 'usuario',
-                        'description' => 'Usuario al que quieres silenciar',
-                        'type' => Option::MENTIONABLE,
-                        'required' => true,
-                    ]),
-                ],
-            ]),
+            $democracia
+            ->setName('democracia')
+            ->setDescription('Compra un voto extra para un campeón sugerido')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption(
+                $democracia_sugerrencia
+                  ->setName('sugerencia')
+                  ->setDescription('ID de la sugerencia a la que quieres añadirle un voto')
+                  ->setType(Option::INTEGER)
+                  ->setRequired(true)
+            ),
+
+            $anarquia
+            ->setName('anarquia')
+            ->setDescription('Quitale un voto a un campeón sugerido')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption(
+                $anarquia_sugerencia
+                  ->setName('sugerencia')
+                  ->setDescription('ID de la sugerencia a la que quieres quitarle un voto')
+                  ->setType(Option::INTEGER)
+                  ->setRequired(true)
+            ),
+
+            $censura
+            ->setName('censura')
+            ->setDescription('Silencia un miembro (incluso al capibe) durante una hora')
+            ->setType(Option::SUB_COMMAND)
+            ->addOption(
+                $censura_usuario
+                  ->setName('usuario')
+                  ->setDescription('Usuario al que quieres silenciar')
+                  ->setType(Option::MENTIONABLE)
+                  ->setRequired(true)
+            ),
+            
         ];
     }
 }
