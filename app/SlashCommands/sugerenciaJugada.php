@@ -93,6 +93,10 @@ class sugerenciaJugada extends SlashCommand
           ->get();
 
         foreach ($sugerencias as $sugerencia) {
+            $sugerencia_name = "{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}";
+            if (strlen($sugerencia_name) > 100) {
+                $sugerencia_name = substr($sugerencia_name, 0, 100);
+            }
             $choice = (new Choice($this->discord()))->setName("{$sugerencia->campeon}|{$sugerencia->rol}|{$sugerencia->build}")->setValue((string) $sugerencia->id);
             $option->addChoice($choice);
         }
